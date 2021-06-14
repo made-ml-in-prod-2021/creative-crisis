@@ -19,8 +19,6 @@ def setup_logging():
 @click.option("--input-dir")
 @click.option("--model-dir")
 def validate(input_dir: str, model_dir: str):
-    for i in range(50):
-        print('+++++++++++')
     setup_logging()
     logger_metrics = logging.getLogger("validation_metrics")
 
@@ -36,8 +34,6 @@ def validate(input_dir: str, model_dir: str):
     val_score = model.score(X, y)
 
     logger_metrics.info(f'got train/val metric {train_score} / {val_score} for model {model_ds}')
-    for i in range(50):
-        print('+++++++++++')
 
 
 if __name__ == '__main__':
