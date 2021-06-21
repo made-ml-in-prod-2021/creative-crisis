@@ -10,6 +10,10 @@ import datetime
 from fastapi import FastAPI
 from pydantic import BaseModel, conlist
 from sklearn.pipeline import Pipeline
+import threading
+import contextlib
+
+
 PATH_TO_MODEL = "model/model.pkl"
 
 logger = logging.getLogger(__name__)
@@ -38,9 +42,9 @@ def load_object(path: str) -> Pipeline:
 def make_predict(
     data: List, features: List[str], model: Pipeline,
 ) -> List[ClassResponse]:
-    data = pd.DataFrame(data, columns = features)
+    data = pd.DataFrame(data, columns=features)
     predicts = model.predict(data)
-    print (predicts)
+    print(predicts)
     return [
         ClassResponse(cls_id=cls_id) for cls_id in predicts
     ]
@@ -57,9 +61,9 @@ def main():
 @app.on_event("startup")
 def load_model():
     global model
-    time.sleep(40)
+    # time.sleep(40)
     model_path = PATH_TO_MODEL
-    print (model_path)
+    print(model_path)
     if model_path is None:
         err = f"PATH_TO_MODEL {model_path} is None"
         logger.error(err)
@@ -81,6 +85,27 @@ def predict(request: ClassRequest):
     return make_predict(request.data, request.features, model)
 
 
-if __name__ == "__main__":
-    uvicorn.run("app:app", host="0.0.0.0", port=os.getenv("PORT", 8000))
+# https://github.com/encode/uvicorn/issues/742
+class Server(uvicorn.Server):
+    def install_signal_handlers(self):
+        pass
 
+    @contextlib.contextmanager
+    def run_in_thread(self):
+        thread = threading.Thread(target=self.run)
+        thread.start()
+        try:
+            while not self.started:
+                time.sleep(1e-3)
+            yield
+        finally:
+            self.should_exit = True
+            thread.join()
+
+
+if __name__ == "__main__":
+    config = uvicorn.Config("app:app", host="0.0.0.0", port=os.getenv("PORT", 8000))
+    server = Server(config=config)
+    time.sleep(os.getenv("SLEEPING_TIME", 30))
+    with server.run_in_thread():
+        time.sleep(os.getenv("RUNNING_TIME", 120))

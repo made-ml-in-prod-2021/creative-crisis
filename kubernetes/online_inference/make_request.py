@@ -3,8 +3,6 @@ import pandas as pd
 import requests
 
 REQUEST_ADD = "http://127.0.0.1:8000/predict/"
-# REQUEST_ADD = "http://0.0.0.0:8000/predict/"
-# REQUEST_ADD = "http://172.17.0.5:8000/predict/"
 PATH_TO_DATA = "data/x_test.csv"
 
 
