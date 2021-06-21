@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: predict-service
+  labels:
+    app: predict-service
+spec:
+  replicas: {{ .Values.replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ .Values.maxSurge }}
+      maxUnavailable: {{ .Values.maxUnavailable }}
+  selector:
+    matchLabels:
+      app: predict-service
+  template:
+    metadata:
+      name: predict-service
+      labels:
+        app: predict-service
+    spec:
+      containers:
+        - image: creativecrisis/online-inference:{{ .Values.image.tag }}
+          name: predict-service
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          resources:
+            requests:
+              memory: {{ .Values.resources.memory }}
+              cpu: {{ .Values.resources.cpu }}
+            limits:
+              memory: {{ .Values.resources.max_memory }}
+              cpu: {{ .Values.resources.max_cpu }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 15
+            periodSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 45
+            periodSeconds: 3

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: online-inference-7
+  labels: 
+    app: online-inference-7
+
+data:
+  config.yaml: |
+    seed: 42

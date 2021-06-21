@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simple-pod
+  labels:
+    app: online-inference-1
+spec:
+  containers:
+    - image: creativecrisis/online_inference:v1
+      name: online-inference-1
+      ports:
+        - containerPort: 8000

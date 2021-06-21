@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replicaset
+  labels:
+    app: online-inference-4
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: online-inference-4
+  template:
+    metadata:
+      name: online-inference-4
+      labels:
+        app: online-inference-4
+    spec:
+      containers:
+        - image: creativecrisis/online_inference:v1
+          name: online-inference-4
+          ports:
+            - containerPort: 8000

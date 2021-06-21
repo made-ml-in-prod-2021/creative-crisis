@@ -1,0 +1,18 @@
+image:
+  tag: pr-1
+
+service:
+  port: 8000
+  targetPort: 8000
+  type: LoadBalancer
+
+replicas: 4
+maxSurge: 50%
+minUnavailable: 50%
+
+resources:
+  memory: "1Gi"
+  cpu: "250m"
+  max_memory: "10Gi"
+  max_cpu: "500m"
+
