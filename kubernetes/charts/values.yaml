@@ -1,5 +1,5 @@
 image:
-  tag: pr-1
+  tag: v2
 
 service:
   port: 8000

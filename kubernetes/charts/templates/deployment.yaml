@@ -21,7 +21,7 @@ spec:
         app: predict-service
     spec:
       containers:
-        - image: creativecrisis/online-inference:{{ .Values.image.tag }}
+        - image: creativecrisis/online_inference:{{ .Values.image.tag }}
           name: predict-service
           ports:
             - containerPort: {{ .Values.service.port }}
@@ -34,13 +34,13 @@ spec:
               cpu: {{ .Values.resources.max_cpu }}
           readinessProbe:
             httpGet:
-              path: /health
+              path: /healz
               port: {{ .Values.service.port }}
             initialDelaySeconds: 15
             periodSeconds: 3
           livenessProbe:
             httpGet:
-              path: /health
+              path: /healz
               port: {{ .Values.service.port }}
             initialDelaySeconds: 45
             periodSeconds: 3
