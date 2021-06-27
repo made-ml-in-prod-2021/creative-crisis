@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-1
+  labels:
+    app: online-inference-5
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: online-inference-5
+  template:
+    metadata:
+      name: online-inference-5
+      labels:
+        app: online-inference-5
+    spec:
+      containers:
+        - image: creativecrisis/online_inference:v1
+          name: online-inference-5
+          ports:
+            - containerPort: 8000
